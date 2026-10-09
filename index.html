@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 4 CoTh Assessment</title>
+    <!-- JSZip library for zipping and downloading notebook images -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .start-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .start-card {
+            background: var(--surface);
+            border-radius: 12px;
+            max-width: 550px;
+            width: 100%;
+            padding: 32px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        .start-title {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .start-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .rules-list {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .rules-list h4 {
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .rules-list ul {
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Top Bar Styling */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .top-bar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timer-badge {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid #fde68a;
+        }
+
+        .violation-badge {
+            background-color: #fee2e2;
+            color: var(--danger);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 1px solid #fca5a5;
+            display: none;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 85px auto 40px auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            padding: 0 16px;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            height: fit-content;
+            position: sticky;
+            top: 85px;
+        }
+
+        .sidebar-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 12px 0 6px 0;
+            color: var(--primary);
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid var(--border);
+            background: var(--bg-light);
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .palette-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .palette-btn.answered {
+            background-color: #dcfce7;
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-header {
+            background: var(--surface);
+            border-left: 5px solid var(--primary);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+        }
+
+        .section-header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .question-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            scroll-margin-top: 85px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .question-number {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-main);
+        }
+
+        .question-marks {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            color: var(--text-main);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            white-space: pre-line;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .option-label:hover {
+            background-color: var(--bg-light);
+            border-color: #cbd5e1;
+        }
+
+        .option-label input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .upload-section {
+            margin-top: 12px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: var(--bg-light);
+            transition: border-color 0.2s;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-label {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .upload-label span.btn-upload {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--text-main);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .preview-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .preview-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .preview-wrapper .remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(220, 38, 38, 0.85);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 10px;
+            max-width: 550px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .focus-modal-content {
+            border-top: 5px solid var(--danger);
+        }
+
+        .focus-warning-title {
+            color: var(--danger);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-list {
+            margin: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--bg-light);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        /* End Screen */
+        .completed-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 24px;
+            background: var(--bg-light);
+        }
+
+        .completed-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 40px 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+
+        .completed-icon {
+            width: 70px;
+            height: 70px;
+            background: #dcfce7;
+            color: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 20px auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- START TEST LANDING SCREEN -->
+    <div id="start-screen" class="start-screen">
+        <div class="start-card">
+            <h1 class="start-title">Grade 4 CoTh Assessment</h1>
+            <p class="start-subtitle">Chapters 1 to 5 • Computer Science</p>
+
+            <div class="input-group">
+                <label for="student-name">Student Full Name <span style="color: red;">*</span></label>
+                <input type="text" id="student-name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="rules-list">
+                <h4>Assessment Guidelines & Rules:</h4>
+                <ul>
+                    <li><strong>Duration:</strong> 60 Minutes total.</li>
+                    <li><strong>Section A:</strong> 25 Multiple Choice Questions (1 Mark each).</li>
+                    <li><strong>Section B:</strong> 10 Questions. Write answers in your notebook and upload clear photos (4 Marks each).</li>
+                    <li><strong>Proctoring Notice:</strong> Navigating away from this tab or window will trigger the focus loss detector and require an explanation report.</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-full" onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <!-- MAIN ASSESSMENT INTERFACE -->
+    <div id="assessment-interface" style="display: none;">
+        <!-- Top Navigation Bar -->
+        <header class="top-bar">
+            <div class="top-bar-title" id="app-header-title">Grade 4 CoTh Assessment</div>
+            <div class="top-bar-actions">
+                <div class="violation-badge" id="violation-badge">Focus Lost: 0</div>
+                <div class="timer-badge" id="timer">Time: 60:00</div>
+                <button class="btn" onclick="openSubmitModal()">Submit & Save</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Palette Navigation Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-title">Question Palette</div>
+                
+                <div class="section-label">Section A (MCQs)</div>
+                <div class="palette-grid" id="palette-sec-a"></div>
+
+                <div class="section-label" style="margin-top: 16px;">Section B (Notebook Uploads)</div>
+                <div class="palette-grid" id="palette-sec-b"></div>
+            </aside>
+
+            <!-- Questions View -->
+            <main class="main-content">
+                <!-- Section A -->
+                <div class="section-header">
+                    <h2>SECTION A: Multiple Choice Questions</h2>
+                    <p>25 Questions • 1 Mark Each • Select the single best answer for each question.</p>
+                </div>
+                <div id="section-a-container"></div>
+
+                <!-- Section B -->
+                <div class="section-header">
+                    <h2>SECTION B: Short Answer / Practical Questions</h2>
+                    <p>10 Questions • 4 Marks Each • Write solutions in your notebook and upload photos of your answers.</p>
+                </div>
+                <div id="section-b-container"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- SUBMISSION CONFIRMATION MODAL -->
+    <div class="modal" id="submitModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Confirm Final Submission</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Review your progress before submitting your assessment:</p>
+            
+            <div class="summary-list">
+                <div class="summary-item">
+                    <span>Student Name:</span>
+                    <strong id="summary-student-name">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Section A (MCQs Answered):</span>
+                    <strong id="summary-sec-a">0 / 25</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Section B (Uploads Completed):</span>
+                    <strong id="summary-sec-b">0 / 10</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Focus Lost Violations:</span>
+                    <strong id="summary-violations" style="color: var(--danger);">0</strong>
+                </div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+                Clicking <strong>Finish Assessment</strong> will automatically download your Section A evaluation report (.txt) and your Section B notebook images (.zip).
+            </p>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeSubmitModal()">Return to Test</button>
+                <button class="btn btn-success" id="finish-btn" onclick="finalizeSubmission()">Finish Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANTI-CHEATING FOCUS LOST MODAL -->
+    <div class="modal" id="focusLostModal">
+        <div class="modal-content focus-modal-content">
+            <div class="focus-warning-title">
+                ⚠️ Focus Lost / Window Switch Detected
+            </div>
+            <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 12px;">
+                You navigated away from the assessment screen or switched browser tabs. This action has been recorded in your proctoring log.
+            </p>
+
+            <div class="input-group">
+                <label for="focus-reason">Please provide an explanation for leaving the test window <span style="color: red;">*</span></label>
+                <textarea id="focus-reason" rows="3" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; font-size: 0.95rem;" placeholder="E.g., System notification popup, accidentally clicked outside window..."></textarea>
+            </div>
+
+            <button class="btn btn-full" onclick="resolveFocusViolation()">Resume Assessment</button>
+        </div>
+    </div>
+
+    <!-- COMPLETED / SUBMITTED SCREEN -->
+    <div id="completed-screen" class="completed-screen">
+        <div class="completed-card">
+            <div class="completed-icon">✓</div>
+            <h1 style="font-size: 1.6rem; color: var(--text-main); margin-bottom: 8px;">Assessment Submitted</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
+                Thank you, <strong id="submitted-student-name">Student</strong>. Your test responses and uploaded files have been downloaded successfully.
+            </p>
+            <p style="font-size: 0.85rem; color: var(--secondary);">
+                You may now safely close this window.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const questionsA = [
+            { id: 1, text: "Which type of computer memory is volatile and loses its stored data when the power is turned OFF?", options: ["ROM", "RAM", "Hard Disc", "Pen Drive"], answer: 1 },
+            { id: 2, text: "How many bits make up one byte?", options: ["4 bits", "16 bits", "8 bits", "1024 bits"], answer: 2 },
+            { id: 3, text: "What is a group of 4 bits called?", options: ["Kilobyte", "Nibble", "Terabyte", "Gigabyte"], answer: 1 },
+            { id: 4, text: "Which storage device is permanently fitted inside the CPU box and stores all the data of the computer system?", options: ["Compact Disc", "Memory Card", "Hard Disc", "Pen Drive"], answer: 2 },
+            { id: 5, text: "What is the maximum storage capacity of a typical Compact Disc (CD)?", options: ["4.7 GB", "700 MB", "1 TB", "128 GB"], answer: 1 },
+            { id: 6, text: "Which cloud storage platform is offered by Microsoft?", options: ["Google Drive", "iCloud", "OneDrive", "Dropbox"], answer: 2 },
+            { id: 7, text: "What type of operating system is Windows 10?", options: ["Character User Interface (CUI)", "Text-based Operating System", "Graphical User Interface (GUI)", "Command-line Interface (CLI)"], answer: 2 },
+            { id: 8, text: "What are the colorful, interactive icons or shortcuts on the Windows 10 Start Menu called?", options: ["Tiles", "Taskbars", "Wallpapers", "Folders"], answer: 0 },
+            { id: 9, text: "The long horizontal bar located at the bottom of the Windows desktop is called the:", options: ["Title bar", "Taskbar", "Scrollbar", "Status bar"], answer: 1 },
+            { id: 10, text: "What is another name for the Context menu that appears when you right-click on the desktop?", options: ["Start menu", "Main menu", "Shortcut menu", "Task menu"], answer: 2 },
+            { id: 11, text: "Which keyboard shortcut is used to permanently delete a file or folder without sending it to the Recycle Bin?", options: ["Ctrl + D", "Delete", "Shift + Delete", "Alt + Delete"], answer: 2 },
+            { id: 12, text: "What happens when you use the \"Cut\" option on a file or folder?", options: ["It makes a duplicate copy", "It removes it from the original location to move it", "It renames the file", "It permanently deletes the file"], answer: 1 },
+            { id: 13, text: "Cyber security is the application of technologies, processes, and controls to protect systems from:", options: ["Dust and dirt", "Power failures", "Cyber attacks", "Slow internet speeds"], answer: 2 },
+            { id: 14, text: "What is the recommended minimum length for creating a strong password?", options: ["4 characters", "6 characters", "8 characters", "12 characters"], answer: 2 },
+            { id: 15, text: "Sending hurtful e-mails, spreading fake rumors, or leaking personal information online is called:", options: ["Cyber Safety", "Cyberbullying", "App Security", "Cloud Computing"], answer: 1 },
+            { id: 16, text: "Which month is celebrated as Cyber Security Awareness Month?", options: ["January", "June", "October", "December"], answer: 2 },
+            { id: 17, text: "In Microsoft Word, under which tab do you find the option to insert Shapes, Pictures, and Tables?", options: ["Home", "Insert", "Layout", "View"], answer: 1 },
+            { id: 18, text: "The pointer that allows you to change the size of an inserted shape is called the:", options: ["Move pointer", "Resize pointer", "Select pointer", "Rotate pointer"], answer: 1 },
+            { id: 19, text: "What is the grid of horizontal rows and vertical columns in Microsoft Word called?", options: ["Cell", "Table", "Gridline", "Chart"], answer: 1 },
+            { id: 20, text: "Which key can you press to move to the next cell while typing in a table?", options: ["Enter", "Shift", "Tab", "Spacebar"], answer: 2 },
+            { id: 21, text: "Combining two or more cells in a table into a single large cell is known as:", options: ["Splitting cells", "Merging cells", "Formatting cells", "Shading cells"], answer: 1 },
+            { id: 22, text: "What feature in Word provides predefined decorative text formats with special effects like shadows and outlines?", options: ["ClipArt", "SmartArt", "WordArt", "Text Box"], answer: 2 },
+            { id: 23, text: "A PowerPoint presentation is a collection of:", options: ["Documents arranged systematically", "Slides arranged in a systematic order", "Spreadsheets with formulas", "Web pages connected together"], answer: 1 },
+            { id: 24, text: "What are the dotted rectangular boxes on a PowerPoint slide that hold text and images called?", options: ["Frames", "Placeholders", "Text Boxes", "Tiles"], answer: 1 },
+            { id: 25, text: "What is the default file extension for a saved Microsoft PowerPoint 2021 file?", options: [" .docx", " .png", " .pptx", " .xlsx"], answer: 2 }
+        ];
+
+        const questionsB = [
+            { id: 26, text: "Differentiate between RAM and ROM based on their memory type, data retention when power is switched off, and function." },
+            { id: 27, text: "Arrange the following memory units in ascending order (smallest to largest) and state how many bytes make up 1 Kilobyte (KB):\n\nGigabyte (GB), Byte, Terabyte (TB), Kilobyte (KB), Megabyte (MB), Bit." },
+            { id: 28, text: "Explain the difference between Copying a folder and Moving a folder in Windows 10, including the context menu options used for each." },
+            { id: 29, text: "Write any four guidelines or rules that should be followed to create a strong and secure password." },
+            { id: 30, text: "What is Cyberbullying? Mention any three steps you should take to protect yourself or prevent cyberbullying." },
+            { id: 31, text: "Define the following terms related to Microsoft Word tables:\n(a) Row\n(b) Column\n(c) Cell\n(d) Merging Cells" },
+            { id: 32, text: "Explain the difference between Merging a cell and Splitting a cell in a Microsoft Word table, giving one practical use for each." },
+            { id: 33, text: "Describe the function of the following components of the Microsoft PowerPoint window interface:\n(a) Slide Navigation Pane\n(b) Slide Pane\n(c) Quick Access Toolbar\n(d) Notes Pane" },
+            { id: 34, text: "List four different types of Slide Layouts available in Microsoft PowerPoint 2021 and briefly explain what each is used for." },
+            { id: 35, text: "Write down the step-by-step procedure to save a presentation in PowerPoint 2021 for the first time." }
+        ];
+
+        /* Application State Store */
+        let studentName = "";
+        let testStarted = false;
+        let testEnded = false;
+        let totalSeconds = 3600; // 60 Minutes
+        let timerInterval = null;
+
+        const userAnswersA = {};
+        const userUploadsB = {};
+        const focusViolations = [];
+        let isFocusLostModalActive = false;
+
+        function startAssessment() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            if (!nameInput) {
+                alert("Please enter your full name before starting the test.");
+                return;
+            }
+
+            studentName = nameInput;
+            testStarted = true;
+
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('assessment-interface').style.display = 'block';
+            document.getElementById('app-header-title').innerText = `Grade 4 CoTh Assessment - ${studentName}`;
+
+            renderQuiz();
+            startTimer();
+            setupProctoring();
+        }
+
+        function renderQuiz() {
+            const containerA = document.getElementById('section-a-container');
+            const containerB = document.getElementById('section-b-container');
+            const palA = document.getElementById('palette-sec-a');
+            const palB = document.getElementById('palette-sec-b');
+
+            // Render Section A
+            questionsA.forEach((q) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-${q.id}`;
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${q.id}</span>
+                        <span class="question-marks">1 Mark</span>
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options-group">
+                        ${q.options.map((opt, idx) => `
+                            <label class="option-label">
+                                <input type="radio" name="q_${q.id}" value="${idx}" onchange="selectOption(${q.id},${idx})">
+                                <span><strong>${String.fromCharCode(65 + idx)})</strong> ${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                containerA.appendChild(card);
+
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.id = `pal-${q.id}`;
+                btn.innerText = q.id;
+                btn.onclick = () => scrollToQuestion(q.id);
+                palA.appendChild(btn);
+            });
+
+            // Render Section B
+            questionsB.forEach((q) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-${q.id}`;
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${q.id}</span>
+                        <span class="question-marks">4 Marks</span>
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="upload-section">
+                        <label class="upload-label" for="file_${q.id}">
+                            <span class="btn-upload">📷 Take/Upload Photo of Notebook</span>
+                            <span>Upload clear images of your written answer</span>
+                        </label>
+                        <input type="file" id="file_${q.id}" class="file-input" accept="image/*" multiple onchange="handleFileUpload(event, ${q.id})">
+                        <div class="image-preview-container" id="preview_${q.id}"></div>
+                    </div>
+                `;
+                containerB.appendChild(card);
+
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.id = `pal-${q.id}`;
+                btn.innerText = q.id;
+                btn.onclick = () => scrollToQuestion(q.id);
+                palB.appendChild(btn);
+            });
+        }
+
+        /* Question Interaction Handlers */
+        function selectOption(qId, optIdx) {
+            userAnswersA[qId] = optIdx;
+            document.getElementById(`pal-${qId}`).classList.add('answered');
+        }
+
+        function handleFileUpload(event, qId) {
+            const files = Array.from(event.target.files);
+            if (!userUploadsB[qId]) userUploadsB[qId] = [];
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    userUploadsB[qId].push({
+                        name: file.name,
+                        dataUrl: e.target.result
+                    });
+                    renderPreviews(qId);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderPreviews(qId) {
+            const previewContainer = document.getElementById(`preview_${qId}`);
+            previewContainer.innerHTML = '';
+
+            const items = userUploadsB[qId] || [];
+            items.forEach((item, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'preview-wrapper';
+                wrapper.innerHTML = `
+                    <img src="${item.dataUrl}">
+                    <button class="remove-btn" onclick="removeImage(${qId}, ${idx})">&times;</button>
+                `;
+                previewContainer.appendChild(wrapper);
+            });
+
+            const palBtn = document.getElementById(`pal-${qId}`);
+            if (items.length > 0) {
+                palBtn.classList.add('answered');
+            } else {
+                palBtn.classList.remove('answered');
+            }
+        }
+
+        function removeImage(qId, imgIndex) {
+            if (userUploadsB[qId]) {
+                userUploadsB[qId].splice(imgIndex, 1);
+                renderPreviews(qId);
+            }
+        }
+
+        function scrollToQuestion(qId) {
+            document.getElementById(`q-${qId}`).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setupProctoring() {
+            window.addEventListener('blur', triggerFocusLoss);
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) triggerFocusLoss();
+            });
+        }
+
+        function triggerFocusLoss() {
+            if (!testStarted || testEnded || isFocusLostModalActive) return;
+
+            isFocusLostModalActive = true;
+            document.getElementById('focus-reason').value = '';
+            document.getElementById('focusLostModal').style.display = 'flex';
+        }
+
+        function resolveFocusViolation() {
+            const reasonInput = document.getElementById('focus-reason').value.trim();
+            if (!reasonInput) {
+                alert("Please state the reason for leaving the test window before resuming.");
+                return;
+            }
+
+            focusViolations.push({
+                timestamp: new Date().toLocaleTimeString(),
+                reason: reasonInput
+            });
+
+            const badge = document.getElementById('violation-badge');
+            badge.style.display = 'inline-block';
+            badge.innerText = `Focus Lost: ${focusViolations.length}`;
+
+            isFocusLostModalActive = false;
+            document.getElementById('focusLostModal').style.display = 'none';
+        }
+
+        /* Timer Handler */
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time is up! Your assessment will now be submitted.");
+                    finalizeSubmission();
+                    return;
+                }
+                totalSeconds--;
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                document.getElementById('timer').innerText = `Time: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function openSubmitModal() {
+            const countA = Object.keys(userAnswersA).length;
+            const countB = Object.keys(userUploadsB).filter(k => userUploadsB[k].length > 0).length;
+
+            document.getElementById('summary-student-name').innerText = studentName;
+            document.getElementById('summary-sec-a').innerText = `${countA} / 25`;
+            document.getElementById('summary-sec-b').innerText = `${countB} / 10`;
+            document.getElementById('summary-violations').innerText = `${focusViolations.length}`;
+            document.getElementById('submitModal').style.display = 'flex';
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').style.display = 'none';
+        }
+
+        async function finalizeSubmission() {
+            testEnded = true;
+            if (timerInterval) clearInterval(timerInterval);
+
+            const finishBtn = document.getElementById('finish-btn');
+            if (finishBtn) {
+                finishBtn.innerText = "Processing...";
+                finishBtn.disabled = true;
+            }
+
+            // 1. Download Section A TXT Report
+            downloadSectionATxt();
+
+            // 2. Download Section B Images ZIP
+            await downloadSectionBImagesZip();
+
+            // 3. Close Modal & Transition to Completed View
+            closeSubmitModal();
+            document.getElementById('assessment-interface').style.display = 'none';
+            document.getElementById('submitted-student-name').innerText = studentName;
+            document.getElementById('completed-screen').style.display = 'flex';
+        }
+
+        function downloadSectionATxt() {
+            let content = "==================================================\n";
+            content += "GRADE 4 COTH ASSESSMENT REPORT\n";
+            content += `Student Name: ${studentName}\n`;
+            content += `Date: ${new Date().toLocaleString()}\n`;
+            content += "==================================================\n\n";
+
+            let score = 0;
+            content += "--- SECTION A (MULTIPLE CHOICE QUESTIONS) ---\n\n";
+            questionsA.forEach((q) => {
+                const selectedIdx = userAnswersA[q.id];
+                content += `Q${q.id}. ${q.text}\n`;
+
+                if (selectedIdx !== undefined) {
+                    const optLetter = String.fromCharCode(65 + selectedIdx);
+                    const optText = q.options[selectedIdx];
+                    const isCorrect = selectedIdx === q.answer;
+                    if (isCorrect) score++;
+
+                    content += `   Student Answer: [${optLetter}] ${optText}\n`;
+                    content += `   Result: ${isCorrect ? "CORRECT" : "INCORRECT"}\n`;
+                    content += `   Correct Answer: [${String.fromCharCode(65 + q.answer)}] ${q.options[q.answer]}\n`;
+                } else {
+                    content += `   Student Answer: [NOT ANSWERED]\n`;
+                    content += `   Correct Answer: [${String.fromCharCode(65 + q.answer)}] ${q.options[q.answer]}\n`;
+                }
+                content += "--------------------------------------------------\n";
+            });
+
+            content += `\nTOTAL SECTION A SCORE: ${score} / 25 Marks\n\n`;
+
+            content += "==================================================\n";
+            content += "PROCTORING & FOCUS LOSS AUDIT LOG\n";
+            content += `Total Incidents: ${focusViolations.length}\n`;
+            content += "==================================================\n";
+
+            if (focusViolations.length === 0) {
+                content += "No focus loss violations recorded.\n";
+            } else {
+                focusViolations.forEach((v, idx) => {
+                    content += `Violation #${idx + 1} [Time: ${v.timestamp}]\n`;
+                    content += `Explanation Provided: ${v.reason}\n`;
+                    content += "--------------------------------------------------\n";
+                });
+            }
+
+            const cleanName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Grade4_CoTh_Section_A_${cleanName}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        async function downloadSectionBImagesZip() {
+            const zip = new JSZip();
+            const folder = zip.folder(`${studentName}_Section_B_Notebook_Uploads`);
+
+            let hasImages = false;
+
+            questionsB.forEach((q) => {
+                const images = userUploadsB[q.id] || [];
+                images.forEach((imgObj, idx) => {
+                    hasImages = true;
+                    const base64Data = imgObj.dataUrl.split(',')[1];
+                    const extension = imgObj.dataUrl.substring("data:image/".length, imgObj.dataUrl.indexOf(";base64")) || "jpg";
+                    const fileName = `Question_${q.id}_Page_${idx + 1}.${extension}`;
+                    folder.file(fileName, base64Data, { base64: true });
+                });
+            });
+
+            if (!hasImages) {
+                folder.file("README.txt", "No notebook images were uploaded for Section B during this assessment.");
+            }
+
+            const cleanName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const zipContent = await zip.generateAsync({ type: "blob" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(zipContent);
+            link.download = `Grade4_CoTh_Section_B_${cleanName}.zip`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+    </script>
+</body>
+</html>
